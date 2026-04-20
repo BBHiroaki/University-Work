@@ -738,52 +738,50 @@ void inseration_Kodama(JRWestCheck *head, int n){
 void merge_YOY(JRWestCheck *head, int n) {
     if (n <= 1) return;
 
-    JRWestCheck *mid_node = head;
-    for (int i = 0; i < n/2; i++) {
-        mid_node = mid_node->next;
+    JRWestCheck *buffer = malloc(sizeof(JRWestCheck) * n);
+    JRWestCheck *temp   = malloc(sizeof(JRWestCheck) * n);
+    if (buffer == NULL || temp == NULL) {
+        free(buffer);
+        free(temp);
+        return;
     }
 
-    // 再帰呼び出し
-    merge_YOY(head, n/2);
-    merge_YOY(mid_node, n - n/2);
+    JRWestCheck *cur = head->next;
+    for (int i = 0; i < n; i++) {
+        buffer[i] = *cur;
+        cur = cur->next;
+    }
 
-    // 両方のソート済みリストをマージして、head から順に上書き
-    JRWestCheck *a = head;
-    JRWestCheck *b = mid_node;
+    for (int width = 1; width < n; width *= 2) {
+        for (int left = 0; left < n; left += 2 * width) {
+            int mid = left + width;
+            int right = left + 2 * width;
+            if (mid > n) mid = n;
+            if (right > n) right = n;
 
-    JRWestCheck *buffer = (JRWestCheck *)malloc(sizeof(JRWestCheck) * n);
+            int i = left, j = mid, k = left;
 
+            while (i < mid && j < right) {
+                if (buffer[i].YOY <= buffer[j].YOY) {
+                    temp[k++] = buffer[i++];
+                } else {
+                    temp[k++] = buffer[j++];
+                }
+            }
+            while (i < mid) {
+                temp[k++] = buffer[i++];
+            }
+            while (j < right) {
+                temp[k++] = buffer[j++];
+            }
+        }
 
-    int ia = 0, ib = 0, ic = 0;
-    int na = n/2;
-    int nb = n - n/2;
-
-    while (ia < na && ib < nb) {
-        if (a->YOY <= b->YOY) {
-            buffer[ic++] = *a;
-            a = a->next;
-            ia++;
-        } else {
-            buffer[ic++] = *b;
-            b = b->next;
-            ib++;
+        for (int i = 0; i < n; i++) {
+            buffer[i] = temp[i];
         }
     }
 
-    while (ia < na) {
-        buffer[ic++] = *a;
-        a = a->next;
-        ia++;
-    }
-
-    while (ib < nb) {
-        buffer[ic++] = *b;
-        b = b->next;
-        ib++;
-    }
-
-    // ソート結果を head から順に上書き
-    JRWestCheck *cur = head;
+    cur = head->next;
     for (int i = 0; i < n; i++) {
         cur->year = buffer[i].year;
         cur->month = buffer[i].month;
@@ -799,57 +797,52 @@ void merge_YOY(JRWestCheck *head, int n) {
     }
 
     free(buffer);
+    free(temp);
 }
 
 void merge_Short_Trip(JRWestCheck *head, int n) {
     if (n <= 1) return;
 
-    JRWestCheck *mid_node = head;
-    for (int i = 0; i < n/2; i++) {
-        mid_node = mid_node->next;
+    JRWestCheck *buffer = malloc(sizeof(JRWestCheck) * n);
+    JRWestCheck *temp   = malloc(sizeof(JRWestCheck) * n);
+    if (buffer == NULL || temp == NULL) {
+        free(buffer);
+        free(temp);
+        return;
     }
 
-    // 再帰呼び出し
-    merge_Short_Trip(head, n/2);
-    merge_Short_Trip(mid_node, n - n/2);
+    JRWestCheck *cur = head->next;
+    for (int i = 0; i < n; i++) {
+        buffer[i] = *cur;
+        cur = cur->next;
+    }
 
-    // 両方のソート済みリストをマージして、head から順に上書き
-    JRWestCheck *a = head;
-    JRWestCheck *b = mid_node;
+    for (int width = 1; width < n; width *= 2) {
+        for (int left = 0; left < n; left += 2 * width) {
+            int mid = left + width;
+            int right = left + 2 * width;
+            if (mid > n) mid = n;
+            if (right > n) right = n;
 
-    JRWestCheck *buffer = (JRWestCheck *)malloc(sizeof(JRWestCheck) * n);
+            int i = left, j = mid, k = left;
 
+            while (i < mid && j < right) {
+                if (buffer[i].Short_Trip <= buffer[j].Short_Trip) {
+                    temp[k++] = buffer[i++];
+                } else {
+                    temp[k++] = buffer[j++];
+                }
+            }
+            while (i < mid) temp[k++] = buffer[i++];
+            while (j < right) temp[k++] = buffer[j++];
+        }
 
-    int ia = 0, ib = 0, ic = 0;
-    int na = n/2;
-    int nb = n - n/2;
-
-    while (ia < na && ib < nb) {
-        if (a->Short_Trip <= b->Short_Trip) {
-            buffer[ic++] = *a;
-            a = a->next;
-            ia++;
-        } else {
-            buffer[ic++] = *b;
-            b = b->next;
-            ib++;
+        for (int i = 0; i < n; i++) {
+            buffer[i] = temp[i];
         }
     }
 
-    while (ia < na) {
-        buffer[ic++] = *a;
-        a = a->next;
-        ia++;
-    }
-
-    while (ib < nb) {
-        buffer[ic++] = *b;
-        b = b->next;
-        ib++;
-    }
-
-    // ソート結果を head から順に上書き
-    JRWestCheck *cur = head;
+    cur = head->next;
     for (int i = 0; i < n; i++) {
         cur->year = buffer[i].year;
         cur->month = buffer[i].month;
@@ -865,57 +858,52 @@ void merge_Short_Trip(JRWestCheck *head, int n) {
     }
 
     free(buffer);
+    free(temp);
 }
 
 void merge_ML_Trip(JRWestCheck *head, int n) {
     if (n <= 1) return;
 
-    JRWestCheck *mid_node = head;
-    for (int i = 0; i < n/2; i++) {
-        mid_node = mid_node->next;
+    JRWestCheck *buffer = malloc(sizeof(JRWestCheck) * n);
+    JRWestCheck *temp   = malloc(sizeof(JRWestCheck) * n);
+    if (buffer == NULL || temp == NULL) {
+        free(buffer);
+        free(temp);
+        return;
     }
 
-    // 再帰呼び出し
-    merge_ML_Trip(head, n/2);
-    merge_ML_Trip(mid_node, n - n/2);
+    JRWestCheck *cur = head->next;
+    for (int i = 0; i < n; i++) {
+        buffer[i] = *cur;
+        cur = cur->next;
+    }
 
-    // 両方のソート済みリストをマージして、head から順に上書き
-    JRWestCheck *a = head;
-    JRWestCheck *b = mid_node;
+    for (int width = 1; width < n; width *= 2) {
+        for (int left = 0; left < n; left += 2 * width) {
+            int mid = left + width;
+            int right = left + 2 * width;
+            if (mid > n) mid = n;
+            if (right > n) right = n;
 
-    JRWestCheck *buffer = (JRWestCheck *)malloc(sizeof(JRWestCheck) * n);
+            int i = left, j = mid, k = left;
 
+            while (i < mid && j < right) {
+                if (buffer[i].ML_Trip <= buffer[j].ML_Trip) {
+                    temp[k++] = buffer[i++];
+                } else {
+                    temp[k++] = buffer[j++];
+                }
+            }
+            while (i < mid) temp[k++] = buffer[i++];
+            while (j < right) temp[k++] = buffer[j++];
+        }
 
-    int ia = 0, ib = 0, ic = 0;
-    int na = n/2;
-    int nb = n - n/2;
-
-    while (ia < na && ib < nb) {
-        if (a->ML_Trip <= b->ML_Trip) {
-            buffer[ic++] = *a;
-            a = a->next;
-            ia++;
-        } else {
-            buffer[ic++] = *b;
-            b = b->next;
-            ib++;
+        for (int i = 0; i < n; i++) {
+            buffer[i] = temp[i];
         }
     }
 
-    while (ia < na) {
-        buffer[ic++] = *a;
-        a = a->next;
-        ia++;
-    }
-
-    while (ib < nb) {
-        buffer[ic++] = *b;
-        b = b->next;
-        ib++;
-    }
-
-    // ソート結果を head から順に上書き
-    JRWestCheck *cur = head;
+    cur = head->next;
     for (int i = 0; i < n; i++) {
         cur->year = buffer[i].year;
         cur->month = buffer[i].month;
@@ -931,57 +919,52 @@ void merge_ML_Trip(JRWestCheck *head, int n) {
     }
 
     free(buffer);
+    free(temp);
 }
 
 void merge_Commuter(JRWestCheck *head, int n) {
     if (n <= 1) return;
 
-    JRWestCheck *mid_node = head;
-    for (int i = 0; i < n/2; i++) {
-        mid_node = mid_node->next;
+    JRWestCheck *buffer = malloc(sizeof(JRWestCheck) * n);
+    JRWestCheck *temp   = malloc(sizeof(JRWestCheck) * n);
+    if (buffer == NULL || temp == NULL) {
+        free(buffer);
+        free(temp);
+        return;
     }
 
-    // 再帰呼び出し
-    merge_Commuter(head, n/2);
-    merge_Commuter(mid_node, n - n/2);
+    JRWestCheck *cur = head->next;
+    for (int i = 0; i < n; i++) {
+        buffer[i] = *cur;
+        cur = cur->next;
+    }
 
-    // 両方のソート済みリストをマージして、head から順に上書き
-    JRWestCheck *a = head;
-    JRWestCheck *b = mid_node;
+    for (int width = 1; width < n; width *= 2) {
+        for (int left = 0; left < n; left += 2 * width) {
+            int mid = left + width;
+            int right = left + 2 * width;
+            if (mid > n) mid = n;
+            if (right > n) right = n;
 
-    JRWestCheck *buffer = (JRWestCheck *)malloc(sizeof(JRWestCheck) * n);
+            int i = left, j = mid, k = left;
 
+            while (i < mid && j < right) {
+                if (buffer[i].Commuter <= buffer[j].Commuter) {
+                    temp[k++] = buffer[i++];
+                } else {
+                    temp[k++] = buffer[j++];
+                }
+            }
+            while (i < mid) temp[k++] = buffer[i++];
+            while (j < right) temp[k++] = buffer[j++];
+        }
 
-    int ia = 0, ib = 0, ic = 0;
-    int na = n/2;
-    int nb = n - n/2;
-
-    while (ia < na && ib < nb) {
-        if (a->Commuter <= b->Commuter) {
-            buffer[ic++] = *a;
-            a = a->next;
-            ia++;
-        } else {
-            buffer[ic++] = *b;
-            b = b->next;
-            ib++;
+        for (int i = 0; i < n; i++) {
+            buffer[i] = temp[i];
         }
     }
 
-    while (ia < na) {
-        buffer[ic++] = *a;
-        a = a->next;
-        ia++;
-    }
-
-    while (ib < nb) {
-        buffer[ic++] = *b;
-        b = b->next;
-        ib++;
-    }
-
-    // ソート結果を head から順に上書き
-    JRWestCheck *cur = head;
+    cur = head->next;
     for (int i = 0; i < n; i++) {
         cur->year = buffer[i].year;
         cur->month = buffer[i].month;
@@ -997,57 +980,52 @@ void merge_Commuter(JRWestCheck *head, int n) {
     }
 
     free(buffer);
+    free(temp);
 }
 
 void merge_sum(JRWestCheck *head, int n) {
     if (n <= 1) return;
 
-    JRWestCheck *mid_node = head;
-    for (int i = 0; i < n/2; i++) {
-        mid_node = mid_node->next;
+    JRWestCheck *buffer = malloc(sizeof(JRWestCheck) * n);
+    JRWestCheck *temp   = malloc(sizeof(JRWestCheck) * n);
+    if (buffer == NULL || temp == NULL) {
+        free(buffer);
+        free(temp);
+        return;
     }
 
-    // 再帰呼び出し
-    merge_sum(head, n/2);
-    merge_sum(mid_node, n - n/2);
+    JRWestCheck *cur = head->next;
+    for (int i = 0; i < n; i++) {
+        buffer[i] = *cur;
+        cur = cur->next;
+    }
 
-    // 両方のソート済みリストをマージして、head から順に上書き
-    JRWestCheck *a = head;
-    JRWestCheck *b = mid_node;
+    for (int width = 1; width < n; width *= 2) {
+        for (int left = 0; left < n; left += 2 * width) {
+            int mid = left + width;
+            int right = left + 2 * width;
+            if (mid > n) mid = n;
+            if (right > n) right = n;
 
-    JRWestCheck *buffer = (JRWestCheck *)malloc(sizeof(JRWestCheck) * n);
+            int i = left, j = mid, k = left;
 
+            while (i < mid && j < right) {
+                if (buffer[i].sum <= buffer[j].sum) {
+                    temp[k++] = buffer[i++];
+                } else {
+                    temp[k++] = buffer[j++];
+                }
+            }
+            while (i < mid) temp[k++] = buffer[i++];
+            while (j < right) temp[k++] = buffer[j++];
+        }
 
-    int ia = 0, ib = 0, ic = 0;
-    int na = n/2;
-    int nb = n - n/2;
-
-    while (ia < na && ib < nb) {
-        if (a->sum <= b->sum) {
-            buffer[ic++] = *a;
-            a = a->next;
-            ia++;
-        } else {
-            buffer[ic++] = *b;
-            b = b->next;
-            ib++;
+        for (int i = 0; i < n; i++) {
+            buffer[i] = temp[i];
         }
     }
 
-    while (ia < na) {
-        buffer[ic++] = *a;
-        a = a->next;
-        ia++;
-    }
-
-    while (ib < nb) {
-        buffer[ic++] = *b;
-        b = b->next;
-        ib++;
-    }
-
-    // ソート結果を head から順に上書き
-    JRWestCheck *cur = head;
+    cur = head->next;
     for (int i = 0; i < n; i++) {
         cur->year = buffer[i].year;
         cur->month = buffer[i].month;
@@ -1063,57 +1041,52 @@ void merge_sum(JRWestCheck *head, int n) {
     }
 
     free(buffer);
+    free(temp);
 }
 
 void merge_Nozomi(JRWestCheck *head, int n) {
     if (n <= 1) return;
 
-    JRWestCheck *mid_node = head;
-    for (int i = 0; i < n/2; i++) {
-        mid_node = mid_node->next;
+    JRWestCheck *buffer = malloc(sizeof(JRWestCheck) * n);
+    JRWestCheck *temp   = malloc(sizeof(JRWestCheck) * n);
+    if (buffer == NULL || temp == NULL) {
+        free(buffer);
+        free(temp);
+        return;
     }
 
-    // 再帰呼び出し
-    merge_Nozomi(head, n/2);
-    merge_Nozomi(mid_node, n - n/2);
+    JRWestCheck *cur = head->next;
+    for (int i = 0; i < n; i++) {
+        buffer[i] = *cur;
+        cur = cur->next;
+    }
 
-    // 両方のソート済みリストをマージして、head から順に上書き
-    JRWestCheck *a = head;
-    JRWestCheck *b = mid_node;
+    for (int width = 1; width < n; width *= 2) {
+        for (int left = 0; left < n; left += 2 * width) {
+            int mid = left + width;
+            int right = left + 2 * width;
+            if (mid > n) mid = n;
+            if (right > n) right = n;
 
-    JRWestCheck *buffer = (JRWestCheck *)malloc(sizeof(JRWestCheck) * n);
+            int i = left, j = mid, k = left;
 
+            while (i < mid && j < right) {
+                if (buffer[i].Nozomi <= buffer[j].Nozomi) {
+                    temp[k++] = buffer[i++];
+                } else {
+                    temp[k++] = buffer[j++];
+                }
+            }
+            while (i < mid) temp[k++] = buffer[i++];
+            while (j < right) temp[k++] = buffer[j++];
+        }
 
-    int ia = 0, ib = 0, ic = 0;
-    int na = n/2;
-    int nb = n - n/2;
-
-    while (ia < na && ib < nb) {
-        if (a->Nozomi <= b->Nozomi) {
-            buffer[ic++] = *a;
-            a = a->next;
-            ia++;
-        } else {
-            buffer[ic++] = *b;
-            b = b->next;
-            ib++;
+        for (int i = 0; i < n; i++) {
+            buffer[i] = temp[i];
         }
     }
 
-    while (ia < na) {
-        buffer[ic++] = *a;
-        a = a->next;
-        ia++;
-    }
-
-    while (ib < nb) {
-        buffer[ic++] = *b;
-        b = b->next;
-        ib++;
-    }
-
-    // ソート結果を head から順に上書き
-    JRWestCheck *cur = head;
+    cur = head->next;
     for (int i = 0; i < n; i++) {
         cur->year = buffer[i].year;
         cur->month = buffer[i].month;
@@ -1129,57 +1102,52 @@ void merge_Nozomi(JRWestCheck *head, int n) {
     }
 
     free(buffer);
+    free(temp);
 }
 
 void merge_Hikari(JRWestCheck *head, int n) {
     if (n <= 1) return;
 
-    JRWestCheck *mid_node = head;
-    for (int i = 0; i < n/2; i++) {
-        mid_node = mid_node->next;
+    JRWestCheck *buffer = malloc(sizeof(JRWestCheck) * n);
+    JRWestCheck *temp   = malloc(sizeof(JRWestCheck) * n);
+    if (buffer == NULL || temp == NULL) {
+        free(buffer);
+        free(temp);
+        return;
     }
 
-    // 再帰呼び出し
-    merge_Hikari(head, n/2);
-    merge_Hikari(mid_node, n - n/2);
+    JRWestCheck *cur = head->next;
+    for (int i = 0; i < n; i++) {
+        buffer[i] = *cur;
+        cur = cur->next;
+    }
 
-    // 両方のソート済みリストをマージして、head から順に上書き
-    JRWestCheck *a = head;
-    JRWestCheck *b = mid_node;
+    for (int width = 1; width < n; width *= 2) {
+        for (int left = 0; left < n; left += 2 * width) {
+            int mid = left + width;
+            int right = left + 2 * width;
+            if (mid > n) mid = n;
+            if (right > n) right = n;
 
-    JRWestCheck *buffer = (JRWestCheck *)malloc(sizeof(JRWestCheck) * n);
+            int i = left, j = mid, k = left;
 
+            while (i < mid && j < right) {
+                if (buffer[i].Hikari <= buffer[j].Hikari) {
+                    temp[k++] = buffer[i++];
+                } else {
+                    temp[k++] = buffer[j++];
+                }
+            }
+            while (i < mid) temp[k++] = buffer[i++];
+            while (j < right) temp[k++] = buffer[j++];
+        }
 
-    int ia = 0, ib = 0, ic = 0;
-    int na = n/2;
-    int nb = n - n/2;
-
-    while (ia < na && ib < nb) {
-        if (a->Hikari <= b->Hikari) {
-            buffer[ic++] = *a;
-            a = a->next;
-            ia++;
-        } else {
-            buffer[ic++] = *b;
-            b = b->next;
-            ib++;
+        for (int i = 0; i < n; i++) {
+            buffer[i] = temp[i];
         }
     }
 
-    while (ia < na) {
-        buffer[ic++] = *a;
-        a = a->next;
-        ia++;
-    }
-
-    while (ib < nb) {
-        buffer[ic++] = *b;
-        b = b->next;
-        ib++;
-    }
-
-    // ソート結果を head から順に上書き
-    JRWestCheck *cur = head;
+    cur = head->next;
     for (int i = 0; i < n; i++) {
         cur->year = buffer[i].year;
         cur->month = buffer[i].month;
@@ -1195,57 +1163,52 @@ void merge_Hikari(JRWestCheck *head, int n) {
     }
 
     free(buffer);
+    free(temp);
 }
 
 void merge_Kodama(JRWestCheck *head, int n) {
     if (n <= 1) return;
 
-    JRWestCheck *mid_node = head;
-    for (int i = 0; i < n/2; i++) {
-        mid_node = mid_node->next;
+    JRWestCheck *buffer = malloc(sizeof(JRWestCheck) * n);
+    JRWestCheck *temp   = malloc(sizeof(JRWestCheck) * n);
+    if (buffer == NULL || temp == NULL) {
+        free(buffer);
+        free(temp);
+        return;
     }
 
-    // 再帰呼び出し
-    merge_Kodama(head, n/2);
-    merge_Kodama(mid_node, n - n/2);
+    JRWestCheck *cur = head->next;
+    for (int i = 0; i < n; i++) {
+        buffer[i] = *cur;
+        cur = cur->next;
+    }
 
-    // 両方のソート済みリストをマージして、head から順に上書き
-    JRWestCheck *a = head;
-    JRWestCheck *b = mid_node;
+    for (int width = 1; width < n; width *= 2) {
+        for (int left = 0; left < n; left += 2 * width) {
+            int mid = left + width;
+            int right = left + 2 * width;
+            if (mid > n) mid = n;
+            if (right > n) right = n;
 
-    JRWestCheck *buffer = (JRWestCheck *)malloc(sizeof(JRWestCheck) * n);
+            int i = left, j = mid, k = left;
 
+            while (i < mid && j < right) {
+                if (buffer[i].Kodama <= buffer[j].Kodama) {
+                    temp[k++] = buffer[i++];
+                } else {
+                    temp[k++] = buffer[j++];
+                }
+            }
+            while (i < mid) temp[k++] = buffer[i++];
+            while (j < right) temp[k++] = buffer[j++];
+        }
 
-    int ia = 0, ib = 0, ic = 0;
-    int na = n/2;
-    int nb = n - n/2;
-
-    while (ia < na && ib < nb) {
-        if (a->Kodama <= b->Kodama) {
-            buffer[ic++] = *a;
-            a = a->next;
-            ia++;
-        } else {
-            buffer[ic++] = *b;
-            b = b->next;
-            ib++;
+        for (int i = 0; i < n; i++) {
+            buffer[i] = temp[i];
         }
     }
 
-    while (ia < na) {
-        buffer[ic++] = *a;
-        a = a->next;
-        ia++;
-    }
-
-    while (ib < nb) {
-        buffer[ic++] = *b;
-        b = b->next;
-        ib++;
-    }
-
-    // ソート結果を head から順に上書き
-    JRWestCheck *cur = head;
+    cur = head->next;
     for (int i = 0; i < n; i++) {
         cur->year = buffer[i].year;
         cur->month = buffer[i].month;
@@ -1261,6 +1224,7 @@ void merge_Kodama(JRWestCheck *head, int n) {
     }
 
     free(buffer);
+    free(temp);
 }
 
 
